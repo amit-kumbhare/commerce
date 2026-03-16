@@ -1,0 +1,15 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    {% for listings in all_listings %}
+        <br>
+        <h3>{{ listings.title }}</h3>
+        <p>{{ listings.description }}</p>
+        <h6>{{ listings.bid }}</h6>
+
+        <form action="{% url 'watch' %}"></form>
+    {% endfor %}
+    
+{% endblock %}
