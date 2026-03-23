@@ -8,5 +8,16 @@
         <h3>{{ listing.title }}</h3>
         <p>{{ listing.description }}</p>
         <h6>{{ listing.bid }}</h6>
-    {% endfor }
+
+        <form action="{% url 'watch' listing_id }" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">
+                {% if listing.watch %} Remove from Watchlist {% else %} Add to watchlist
+                {% endif %}
+            </button>
+        </form>
+
+    {% empty %}
+        <p>Add something to your Watchlist!</p>
+    {% endfor %}
 {% endblock %}

@@ -7,14 +7,7 @@
     </p>
     <form action="{% url 'listing' %}", method="POST">
         {% csrf_token %}
-        <label for="Listing_Title">Listing Title: </label>
-        <input id="Listing_Title" type="text" name="Title">
-
-        <label for="Description">Add Description: </label>
-        <input type="text" id="Description" name="Description">
-
-        <label for="starting_bid">Starting Bid :</label>
-        <input type="number" name="Bid" id="starting_bid">
-        <input type="submit" value="OK">
+        {{ form.as_p }}
+        <button class="btn btn-primary" type="submit">Create Listing</button>
     </form>
 {% endblock %}

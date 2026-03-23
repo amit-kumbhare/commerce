@@ -2,14 +2,24 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
+    <h6>{{ optional_test }}</h6>
     {% for listings in all_listings %}
         <br>
+        {% if listings.img %}
+        <img src="{{ listings.img.url }}" alt="{{ listings.title }}">
+        {% endif %}
         <h3>{{ listings.title }}</h3>
         <p>{{ listings.description }}</p>
         <h6>{{ listings.bid }}</h6>
+        
+        <form action="{% url 'watch' listing_id }" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">
+                {% if listing.watch %} Remove from Watchlist {% else %} Add to watchlist
+                {% endif %}
+            </button>
+        </form>
 
-        <form action="{% url 'watch' %}"></form>
     {% endfor %}
     
 {% endblock %}
