@@ -5,9 +5,10 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect
 from . import forms
+from django.contrib import messages
 
 from .models import User
-from .models import Auction_Listing
+from .models import Auction_Listing, Bid
 
 Bid_Category = { "FR": "Fashion",
                  "TY": "Toys",
@@ -18,7 +19,8 @@ Bid_Category = { "FR": "Fashion",
 def index(request):
     all_listings = Auction_Listing.objects.all()
     return render(request, "auctions/index.html",{
-        "all_listings": all_listings
+        "all_listings": all_listings,
+        "count_watchlist" : len(list(Auction_Listing.objects.exclude(watch=False)))
     })
 
 
@@ -80,15 +82,28 @@ def create(request):
 
 def new_listing(request):
     if request.method == "POST":
-        form = Auction_Listing(request.POST, request.FILES)
+        form = forms.CreateListingForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            listing = form.save(commit = False)
+            listing.user = request.user
+            listing.save()
+
+            initial_bid = form.cleaned_data('bid')
             return redirect('index')
     else:
         form = Auction_Listing()
     return render(request, "auctions/create.html", {
         "form" : form # If form isn't valid -> Direct to the same fields to edit
     })
+
+def view_listing(request, listing_id):
+    if request.method == "POST":
+        listing = get_object_or_404(Auction_Listing, pk=listing_id)
+        return render(request,"auctions/item.html",{
+            "listing": listing,
+            "count_bids": 0
+        })
+    return redirect('index')
 
 def watch(request,listing_id):
     if request.method == "POST":
@@ -97,7 +112,10 @@ def watch(request,listing_id):
 
         listing.watch = not listing.watch # Negation
         listing.save(update_fields=['watch'])
-    return render(request, "auctions/watchlist.html")
+    all_listings = Auction_Listing.objects.exclude(watch=False)
+    return render(request, "auctions/watchlist.html",{
+        "listings" : all_listings
+    })
 
 def watchlist(request):
     # This would require all objs with tags 
@@ -114,7 +132,31 @@ def watchlist(request):
     all_listings = Auction_Listing.objects.exclude(watch=False)
     return render(request,"auctions/watchlist.html",{
         "listings": all_listings    })
+
+def count_watchlist(request): # TODO
+    pass
     
+def new_bid(request, listing_id):
+    # fetch the bid:
+    form = get_object_or_404(Auction_Listing, pk=listing_id)
+    new_bid_value = float(request.POST["new_bid"])
+    if new_bid_value > form.bid:
+        form.bid = new_bid_value
+        form.save()
+        # messages = "Bid placed sucessfully!"
+        message = "Bid placed successfully!"
+    else:
+        message = "Bid must be higher than current price."
+        
+    
+    return render(request, "auctions/item.html",{
+        "listing": form,
+        "new_bid_placed" : message
+    })
+
+    
+
+
 def category(request):
     
     return render(request, "auctions/categories.html",{
@@ -127,84 +169,6 @@ def category_search(request, category_id):
         "all_listings" : all_listings,
         "optional_text": f"All listings with Category as {category_id}"
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

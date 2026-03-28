@@ -5,3 +5,6 @@ class CreateListingForm(forms.Form):
     description = forms.CharField(widget=forms.Textarea)
     starting_bid = forms.DecimalField(max_digits=10, decimal_places=2)
     img = forms.ImageField()
+
+
+    

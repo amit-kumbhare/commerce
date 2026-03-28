@@ -9,7 +9,7 @@
         <p>{{ listing.description }}</p>
         <h6>{{ listing.bid }}</h6>
 
-        <form action="{% url 'watch' listing_id }" method="post">
+        <form action="{% url 'watch' listing.id %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-secondary">
                 {% if listing.watch %} Remove from Watchlist {% else %} Add to watchlist

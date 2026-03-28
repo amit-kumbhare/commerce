@@ -7,9 +7,7 @@ class User(AbstractUser):
 class Auction_Listing(models.Model):
     title = models.TextField(max_length=64)
     description = models.TextField(max_length=200, blank=True)
-    
     bid = models.DecimalField(decimal_places=2, max_digits=6)
-
     # null=True lets the database store nothing, blank=True lets the form be empty
     img = models.ImageField(upload_to="listings/", blank=True, null=False)
     watch = models.BooleanField(default=False)
