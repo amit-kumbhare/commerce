@@ -4,13 +4,13 @@
     <h2>All Categories</h2>
 
     {% for category in all_listings %}
-        <h6>{{category.title}}</h6>
         <form action="{% url 'category' category_id }" method="post">
             {% csrf_token %}
-            <button type="submit" class="btn btn-secondary">
-                View All
+            <button type="button" class="link-button">
+                {{category.title}}
             </button>
         </form>
+        <br>
 
 
     {% endfor %}
