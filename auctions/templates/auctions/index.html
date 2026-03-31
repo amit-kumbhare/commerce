@@ -19,9 +19,10 @@
                 {% endif %}
             </button>
         </form>
+        <br>
         <form action="{% url 'view_listing' listings.id %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="'btn btn-secondary">View</button>
+            <button type="submit" class="'btn btn-primary">View</button>
         </form>
 
     {% endfor %}

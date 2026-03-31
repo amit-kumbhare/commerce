@@ -1,3 +1,9 @@
+"""URL routing configuration for auctions app.
+
+Defines URL patterns mapping paths to view functions. Use path() for simple routes,
+re_path() for regex. Included in main settings.urls via app namespace. Follow
+RESTful naming: /resource/ (list), /resource/<id>/ (detail), etc.
+"""
 from django.urls import path
 
 from . import views

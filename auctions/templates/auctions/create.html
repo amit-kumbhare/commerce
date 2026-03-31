@@ -5,9 +5,15 @@
     <p>Add a listing on you're own.
         You start the bidding price !!
     </p>
-    <form action="{% url 'listing' %}", method="POST">
+    <form action="{% url 'listing' %}", method="POST", enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button class="btn btn-primary" type="submit">Create Listing</button>
     </form>
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        {{ form.errors }}
+    </div>
+    {% endif %}
+
 {% endblock %}
