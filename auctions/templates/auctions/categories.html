@@ -3,11 +3,11 @@
 {% block body %}
     <h2>All Categories</h2>
 
-    {% for category in all_listings %}
-        <form action="{% url 'category' category_id }" method="post">
+    {% for category_id,category in all_listings.items %}
+        <form action="{% url 'category_search' category_id %}" method="post">
             {% csrf_token %}
-            <button type="button" class="link-button">
-                {{category.title}}
+            <button type="submit" class="link-button">
+                {{category}}
             </button>
         </form>
         <br>

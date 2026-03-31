@@ -3,12 +3,13 @@
 {% block body %}
     <h2>Listing: {{ listing.title }}</h2>
     {% if listing.watch %}
-        <p>Watchlist</p>
-    {% endif %}
+        <button type="button" class="btn btn-secondary" >Watchlist</button>
 
-    <img src="{{ listing.img.url }}" alt="{{ listing.title }}" id="bid_image">
+    {% endif %}
+    <br>
+    <img src="{{ listing.img.url }}" alt="{{ listing.title }}" id="bid_image" height="300px" width="300px">
     <p>{{ listing.description }}</p>
-    <h3><b>{{listing.bid }}</b> </h3>
+    <h3><b>{{listing.starting_bid }}</b> </h3>
 
     <p>{{ listing.bid_count }}(s) so far.</p>
 
@@ -26,7 +27,7 @@
 
     <h3>Details :</h3>
     <ul>
-        <li>Created by {{listing.user }}</li>
+        <li>Created by {{ listing.user }}</li>
         {% if listing.category %}
             <li>Category : {{listing.category}}</li>
         {% else %}

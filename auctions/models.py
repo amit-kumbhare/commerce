@@ -18,13 +18,14 @@ class User(AbstractUser):
     pass
 
 class Auction_Listing(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing_owner", null=True, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing_owner")
+    # owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing_owner", null=True, blank=True)
     title = models.TextField(max_length=64)
     description = models.TextField(max_length=200, blank=True)
     starting_bid = models.DecimalField(decimal_places=2, max_digits=6)
     # null=True lets the database store nothing, blank=True lets the form be empty
     img = models.ImageField(upload_to="auctions/listing_photos/", blank=True)
-    watch = models.ManyToManyField(User, blank=True,related_name="user_watchlist")
+    watch = models.ManyToManyField(User, blank=False,related_name="user_watchlist")
     # Some Categories
     Bid_Category = [ ("FR","Fashion"),("TY","Toys"), ("AR", "Artifact"),("JW", "Jewelry"),
                  ("MC","Machinary")]
@@ -32,7 +33,7 @@ class Auction_Listing(models.Model):
     category = models.CharField(
         max_length=2, 
         choices=Bid_Category, 
-        blank=True)
+        blank=False)
     bid_count = models.IntegerField(default=0)
 
 class Bid(models.Model):

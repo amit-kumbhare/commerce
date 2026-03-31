@@ -18,12 +18,6 @@ from django.contrib import messages
 from .models import User
 from .models import Auction_Listing, Bid
 
-Bid_Category = { "FR": "Fashion",
-                 "TY": "Toys",
-                 "AR": "Artifact",
-                 "JW": "Jewelry",
-                 "MC": "Machinary"}
-
 def index(request):
     # .objects.all() -> gets me everything
     all_listings = Auction_Listing.objects.all()
@@ -34,7 +28,13 @@ def index(request):
         # TODO -> Integrate user with this to have different user with different watchlists
     })
 
+###################################################################################
+###################################################################################
+
+# OPTIONAL
 # TODO -> Implement a new tab for all of the listings created by the user.
+
+###################################################################################
 
 def login_view(request):
     if request.method == "POST":
@@ -92,6 +92,10 @@ def create(request):
         "form": forms.CreateListingForm()
     })
 
+###################################################################################
+# LISTINGS #
+###################################################################################
+
 def new_listing(request):
     if request.method == "POST":
         form = forms.CreateListingForm(request.POST, request.FILES)
@@ -116,8 +120,6 @@ def new_listing(request):
         "form" : form # If form isn't valid -> Direct to the same fields to edit
     })
 
-
-# TODO -> Fix the size of the image in item.html (id -> bid_image)
 def view_listing(request, listing_id):
     if request.method == "POST":
         # Search all listings with the listing_id
@@ -126,6 +128,10 @@ def view_listing(request, listing_id):
             "listing": listing
         })
     return redirect('index')
+
+###################################################################################
+# WATCHLIST #
+###################################################################################
 
 def watch(request,listing_id):
     if request.method == "POST":
@@ -165,13 +171,17 @@ def watchlist(request):
 def count_watchlist(request): # TODO
     # all_listings = Auction_Listings.objects.exclude(watch = False, user != user_id)
     pass
+
+###################################################################################
+# BIDDINGS #
+###################################################################################
     
 def new_bid(request, listing_id):
     # fetch the bid:
     form = get_object_or_404(Auction_Listing, pk=listing_id)
     new_bid_value = float(request.POST["new_bid"])
-    if new_bid_value > form.new_bid:
-        form.bid = new_bid_value
+    if new_bid_value > form.starting_bid:
+        form.starting_bid = new_bid_value
         form.bid_count += 1 # Here we increment the 
         form.save()
         # messages = "Bid placed sucessfully!"
@@ -185,21 +195,31 @@ def new_bid(request, listing_id):
         "new_bid_placed" : message
     })
 
-    
+###################################################################################
+# CATEGORY #
+###################################################################################
 
+Bid_Category = { "FR": "Fashion",
+                 "TY": "Toys",
+                 "AR": "Artifact",
+                 "JW": "Jewelry",
+                 "MC": "Machinary"}
 
 def category(request):
-    
     return render(request, "auctions/categories.html",{
-        "all_listings" : Bid_Category.values()
+        "all_listings" : Bid_Category
     })
 
 def category_search(request, category_id):
     all_listings = Auction_Listing.objects.filter(category=category_id)
     return render(request, "auctions/index.html",{
         "all_listings" : all_listings,
-        "optional_text": f"All listings with Category as {category_id}"
+        # "optional_text": f"All listings with Category as {category_id}"
+        "optional_text": f"All listings with Category as {Bid_Category[category_id]}"
     })
+
+###################################################################################
+###################################################################################
 
 
 
