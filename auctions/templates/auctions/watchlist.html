@@ -2,22 +2,43 @@
 
 {% block body %}
     <h1>You're WatchList</h1>
-    <h2>{{ empty_watchlist }}</h2>
-    {% for listing in listings %}
-        <br>
-        <h3>{{ listing.title }}</h3>
-        <p>{{ listing.description }}</p>
-        <h6>{{ listing.bid }}</h6>
+    
+    {% for listings in all_listings %}
+        <div class="container">
+        <div class="card">
+            {% if listings.img %}
+                <div class="card-image">
+                    <img src="{{ listings.img.url }}" alt="{{ listings.title }}" id="bid_image" height="300px" width="300px">
+                </div>
+            {% endif %}
+            <div class="card-content">
+                <h2>{{ listings.title }}</h2>
+                <p class="price">Price: {{listings.starting_bid}}</p>
+                <p class="date">Created {{listings.created_datetime}}</p>
+            </div>
+            <form action="{% url 'watch' listings.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">
+                {% if listing.watch %} Remove from Watchlist {% else %} Add to watchlist
+                {% endif %}
+            </button>
+            </form>
+            <br>
+            <form action="{% url 'view_listing' listings.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="'btn btn-primary">View</button>
+            </form>
 
-        <form action="{% url 'watch' listing.id %}" method="post">
+            <form action="{% url 'watch' listings.id %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-secondary">
                 {% if listing.watch %} Remove from Watchlist {% else %} Add to watchlist
                 {% endif %}
             </button>
         </form>
+        </div>        
+        </div> 
+        <br>       
 
-    {% empty %}
-        <p>Add something to your Watchlist!</p>
     {% endfor %}
 {% endblock %}

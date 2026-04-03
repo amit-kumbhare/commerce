@@ -35,6 +35,7 @@ class Auction_Listing(models.Model):
         choices=Bid_Category, 
         blank=False)
     bid_count = models.IntegerField(default=0)
+    created_datetime = models.DateTimeField(auto_now_add=True, null=True)
 
 class Bid(models.Model):
     # name = User()
@@ -46,7 +47,7 @@ class Bid(models.Model):
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments")
     listing = models.ForeignKey(Auction_Listing, on_delete=models.CASCADE, related_name="listing_comments")
-    text = models.TextField(max_length=100)
+    text = models.TextField(max_length=300)
     created_at = models.DateTimeField(auto_now_add=True)
 
 

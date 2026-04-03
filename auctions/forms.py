@@ -45,5 +45,8 @@ class CreateListingForm(forms.ModelForm):
         model = models.Auction_Listing
         fields = ["title", "description","starting_bid","img","category"]
 
-
-    
+class CreateComment(forms.ModelForm):
+    text = forms.CharField(widget=forms.TextInput)
+    class Meta:
+        model = models.Comment
+        fields = ["text"]

@@ -16,7 +16,7 @@ from . import forms
 from django.contrib import messages
 
 from .models import User
-from .models import Auction_Listing, Bid
+from .models import Auction_Listing, Bid, Comment
 
 def index(request):
     # .objects.all() -> gets me everything
@@ -24,7 +24,7 @@ def index(request):
     return render(request, "auctions/index.html",{
         "all_listings": all_listings,
         # Excludes all listings not watchlisted by the user
-        "count_watchlist" : len(list(Auction_Listing.objects.exclude(watch=False)))
+        "count_watchlist" : count_watchlist(request)
         # TODO -> Integrate user with this to have different user with different watchlists
     })
 
@@ -103,7 +103,7 @@ def new_listing(request):
             listing = form.save(commit = False) # Commit = False
             # commit = False, creates the instance of class (obj) 
             # but the data isn't written into the db yet -> waiting for some final edits
-            listing.user = request.user
+            listing.owner = request.user
             # Like attaching the user who made the listing in the first place
             listing.bid_count = 0
             # Setting the bid_count = 0, 
@@ -125,7 +125,8 @@ def view_listing(request, listing_id):
         # Search all listings with the listing_id
         listing = get_object_or_404(Auction_Listing, pk=listing_id)
         return render(request,"auctions/item.html",{
-            "listing": listing
+            "listing": listing,
+            "comments_form" : forms.CreateComment()
         })
     return redirect('index')
 
@@ -143,7 +144,7 @@ def watch(request,listing_id):
             # instead they have sets, we can add or remove people from
 
         # Negation of watch field
-        if request.user in listing.watch.all():
+        if listing.watch.filter(id=request.user.id).exists():
             listing.watch.remove(request.user)
         else:
             listing.watch.add(request.user)
@@ -155,6 +156,7 @@ def watch(request,listing_id):
     # NOTE -> .exclude() does not work the same was as .filter() 
     all_listings = Auction_Listing.objects.filter(watch=request.user)
 
+
     # all_listings = Auction_Listing.objects.exclude(watch=False, user != user_id)
     
     return render(request, "auctions/watchlist.html",{
@@ -162,15 +164,19 @@ def watch(request,listing_id):
     })
 
 def watchlist(request):   
-    all_listings = Auction_Listing.objects.exclude(watch=False)
+    all_listings = Auction_Listing.objects.filter(watch=request.user)
     # all_listings = Auction_Listing.objects.exclude(watch=False, user != user_id)
     return render(request,"auctions/watchlist.html",{
-        "listings": all_listings    
+        "all_listings": all_listings    
     })
 
-def count_watchlist(request): # TODO
-    # all_listings = Auction_Listings.objects.exclude(watch = False, user != user_id)
-    pass
+def count_watchlist(request): 
+    # Here existance of watch -> means its true in M2M relationship
+    # And request.user was added previously inside the watch function
+    if request.user.is_authenticated:
+        return Auction_Listing.objects.filter(watch=request.user).count()
+    else:
+        return 0
 
 ###################################################################################
 # BIDDINGS #
@@ -219,7 +225,37 @@ def category_search(request, category_id):
     })
 
 ###################################################################################
+# COMMENTS #
 ###################################################################################
+
+def add_comment(request,listing_id):
+    # Fetch the listing for redirection
+    listing = get_object_or_404(Auction_Listing, pk=listing_id)
+    listing_comments = Comment.objects.filter(listing=listing_id)
+    if request.method == "POST":
+        form = forms.CreateComment(request.POST, request.FILES)
+        
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.user = request.user
+            new_comment.listing = listing
+            new_comment.save()
+            return render(request, "auctions/item.html",{
+                "listing": listing,
+                "comments": listing_comments,
+                "comments_form" : forms.CreateComment()
+
+            })
+    else:
+        com = Comment()
+    return render(request, "auctions/item.html",{
+        "listing" : listing
+    })
+
+
+
+
+
 
 
 

@@ -29,11 +29,30 @@
     <ul>
         <li>Created by {{ listing.user }}</li>
         {% if listing.category %}
-            <li>Category : {{listing.category}}</li>
+            <li>Category : {{listing.category }}</li>
         {% else %}
             <li>Category : No Category Listed </li>
         {% endif %}
     </ul>
+
+    <br>
+    <h5><b>Comments</b></h5>
+    <br>
+    {% if user.is_authenticated %}
+        <form action="{% url 'comment' listing.id %}", method="post">
+            {% csrf_token %}
+            {{ comments_form.as_p }}
+            <br>
+            <button class="btn btn-primary" type="submit">Comment</button>
+        </form>
+    {% endif %}
+    
+    {% for comment in comments %}
+        <p> {{comment.created_at }}</p>
+        <p><b> {{ comment.user }} :</b> {{ comment.text }}</p>
+    {% endfor %}
+
+
     
     
 {% endblock %}
