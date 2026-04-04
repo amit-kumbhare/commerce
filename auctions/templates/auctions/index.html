@@ -20,14 +20,17 @@
             <form action="{% url 'watch' listings.id %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-secondary">
-                {% if listing.watch %} Remove from Watchlist {% else %} Add to watchlist
+                {% if request.user in listings.watch.all %} 
+                    Remove from Watchlist 
+                {% else %} 
+                    Add to watchlist
                 {% endif %}
             </button>
             </form>
             <br>
             <form action="{% url 'view_listing' listings.id %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="'btn btn-primary">View</button>
+            <button type="submit" class="btn btn-warning">View</button>
             </form>
         </div>        
         </div> 

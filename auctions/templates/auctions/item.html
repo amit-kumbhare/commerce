@@ -3,7 +3,7 @@
 {% block body %}
     <h2>Listing: {{ listing.title }}</h2>
     {% if listing.watch %}
-        <button type="button" class="btn btn-secondary" >Watchlist</button>
+        <button type="button" class="btn btn-warning" >Watchlist</button>
 
     {% endif %}
     <br>
@@ -20,7 +20,7 @@
         <input type="number" name="new_bid" placeholder="Bid Higher !!" >
         <br>
         <br>
-        <button class="btn btn-primary" type="submit">Place Bid</button>
+        <button class="btn btn-dark" type="submit">Place Bid</button>
     </form>
     
     <p>{{ new_bid_placed }}</p>

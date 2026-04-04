@@ -117,7 +117,8 @@ def new_listing(request):
     else:
         form = Auction_Listing()
     return render(request, "auctions/create.html", {
-        "form" : form # If form isn't valid -> Direct to the same fields to edit
+        "form" : form, # If form isn't valid -> Direct to the same fields to edit
+        "count_watchlist" : count_watchlist(request)
     })
 
 def view_listing(request, listing_id):
@@ -128,8 +129,7 @@ def view_listing(request, listing_id):
         return render(request,"auctions/item.html",{
             "listing": listing,
             "comments_form" : forms.CreateComment(),
-            "comments": listing_comments,
-            "comments_form" : forms.CreateComment()
+            "comments": listing_comments
         })
     return redirect('index')
 
@@ -163,14 +163,16 @@ def watch(request,listing_id):
     # all_listings = Auction_Listing.objects.exclude(watch=False, user != user_id)
     
     return render(request, "auctions/watchlist.html",{
-        "all_listings" : all_listings
+        "all_listings" : all_listings,
+        "count_watchlist" : count_watchlist(request)
     })
 
 def watchlist(request):   
     all_listings = Auction_Listing.objects.filter(watch=request.user)
     # all_listings = Auction_Listing.objects.exclude(watch=False, user != user_id)
     return render(request,"auctions/watchlist.html",{
-        "all_listings": all_listings    
+        "all_listings": all_listings ,
+        "count_watchlist" : count_watchlist(request)   
     })
 
 def count_watchlist(request): 
@@ -216,7 +218,8 @@ Bid_Category = { "FR": "Fashion",
 
 def category(request):
     return render(request, "auctions/categories.html",{
-        "all_listings" : Bid_Category
+        "all_listings" : Bid_Category,
+        "count_watchlist" : count_watchlist(request)
     })
 
 def category_search(request, category_id):
@@ -224,7 +227,8 @@ def category_search(request, category_id):
     return render(request, "auctions/index.html",{
         "all_listings" : all_listings,
         # "optional_text": f"All listings with Category as {category_id}"
-        "optional_text": f"All listings with Category as {Bid_Category[category_id]}"
+        "optional_text": f"All listings with Category as {Bid_Category[category_id]}",
+        "count_watchlist" : count_watchlist(request)
     })
 
 ###################################################################################
@@ -254,6 +258,7 @@ def add_comment(request,listing_id):
         com = Comment()
     return render(request, "auctions/item.html",{
         "listing" : listing
+
     })
 
 

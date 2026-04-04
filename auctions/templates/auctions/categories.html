@@ -2,16 +2,14 @@
 
 {% block body %}
     <h2>All Categories</h2>
-
+    <br>
     {% for category_id,category in all_listings.items %}
         <form action="{% url 'category_search' category_id %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="link-button">
+            <button type="submit" class="btn btn-link">
                 {{category}}
             </button>
         </form>
-        <br>
-
 
     {% endfor %}
     
