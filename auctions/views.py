@@ -124,8 +124,11 @@ def view_listing(request, listing_id):
     if request.method == "POST":
         # Search all listings with the listing_id
         listing = get_object_or_404(Auction_Listing, pk=listing_id)
+        listing_comments = Comment.objects.filter(listing=listing_id)
         return render(request,"auctions/item.html",{
             "listing": listing,
+            "comments_form" : forms.CreateComment(),
+            "comments": listing_comments,
             "comments_form" : forms.CreateComment()
         })
     return redirect('index')
@@ -160,7 +163,7 @@ def watch(request,listing_id):
     # all_listings = Auction_Listing.objects.exclude(watch=False, user != user_id)
     
     return render(request, "auctions/watchlist.html",{
-        "listings" : all_listings
+        "all_listings" : all_listings
     })
 
 def watchlist(request):   
@@ -238,6 +241,7 @@ def add_comment(request,listing_id):
         if form.is_valid():
             new_comment = form.save(commit=False)
             new_comment.user = request.user
+            # TODO -> COnfigure way to add user class
             new_comment.listing = listing
             new_comment.save()
             return render(request, "auctions/item.html",{
